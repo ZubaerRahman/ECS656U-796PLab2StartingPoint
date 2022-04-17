@@ -69,7 +69,7 @@ public class FSStorageService implements StorageService {
 
     @Override
     public Path loadPath(String filename) {
-        return rootLocation.resolve(rootLocation);
+        return rootLocation.resolve(filename);
     }
 
     @Override
