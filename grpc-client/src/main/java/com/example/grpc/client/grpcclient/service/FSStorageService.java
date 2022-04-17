@@ -90,12 +90,15 @@ public class FSStorageService implements StorageService {
         try {
             Path file = loadPath(filename);
             Resource resource = new UrlResource(file.toUri());
+            System.out.println(resource.exists());
+            System.out.println(resource.isReadable());
+            System.out.println(resource.toString());
             if (resource.exists() || resource.isReadable()) {
                 LOGGER.info("Resource retrieved!");
                 return resource;
             }
             else {
-                LOGGER.error("Failed to access file %s. Make sure the file exists and it is readable.");
+                LOGGER.error("Failed to access file {}. Make sure the file exists and it is readable.", filename);
                 throw new FileStorageException(String.format("Failed to access file %s. Make sure the file exists and it is readable.", filename));
             }
         }
