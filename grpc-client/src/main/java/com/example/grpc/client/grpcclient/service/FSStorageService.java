@@ -91,6 +91,7 @@ public class FSStorageService implements StorageService {
             Path file = loadPath(filename);
             Resource resource = new UrlResource(file.toUri());
             if (resource.exists() || resource.isReadable()) {
+                LOGGER.info("Resource retrieved!");
                 return resource;
             }
             else {

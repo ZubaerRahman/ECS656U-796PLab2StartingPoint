@@ -134,8 +134,9 @@ public class MatrixRestController {
     @GetMapping("/files/{filename:.+}")
     @ResponseBody
     public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
-        logger.info("Service file {} ...", filename);
+        logger.info("Serving file {} ...", filename);
         Resource file = storageService.loadAsResource(filename);
+        logger.info("Returning file {} ...", filename);
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
                 "attachment; filename=\"" + file.getFilename() + "\"").body(file);
     }
