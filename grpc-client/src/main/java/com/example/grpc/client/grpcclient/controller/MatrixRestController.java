@@ -78,7 +78,7 @@ public class MatrixRestController {
                     //else check for matrix to be NxN with correct dimensions
                     else {
                         if (!isMatrixIsValidAndSquare(matrixA)) {
-                            logger.error("Invalid matrix uploaded!");
+                            logger.error("Invalid matrix A uploaded!");
                             redirectAttributes.addFlashAttribute("message", "InvalidMatrix !");
                             return "redirect:/";
                         }
@@ -86,7 +86,7 @@ public class MatrixRestController {
                         else {
                             matrixAUploaded = true;
                             storageService.storeFile(file);
-                            System.out.println("Completed file upload....");
+                            logger.info("Completed Matrix A upload!");
                         }
 
                     }
@@ -97,16 +97,19 @@ public class MatrixRestController {
                     matrixB = makeArray(file);
                     //is null when exception was thrown, then show error
                     if (matrixB == null) {
+                        logger.error("File doesn't contain any matrix!");
                         redirectAttributes.addFlashAttribute("message", "InvalidMatrix " + file.getOriginalFilename() + "!");
                         return "redirect:/";
                     } else {
                         if (!isMatrixIsValidAndSquare(matrixB)) {
+                            logger.error("Invalid matrix B uploaded!");
                             redirectAttributes.addFlashAttribute("message", "InvalidMatrix !");
                             return "redirect:/";
                         } else {
                             //if matrix satisfies all our criteria save
                             matrixBUploaded = true;
                             storageService.storeFile(file);
+                            logger.info("Completed Matrix B upload!");
                         }
 
                     }
@@ -146,6 +149,6 @@ public class MatrixRestController {
         int lines = matrix.length;
         int columns = matrix[0].length;
 
-        return lines < 1 || columns < 1 || lines != columns || !isPowerOfTwo(lines) || !isPowerOfTwo(columns);
+        return !(lines < 1 || columns < 1 || lines != columns || !isPowerOfTwo(lines) || !isPowerOfTwo(columns));
     }
 }
