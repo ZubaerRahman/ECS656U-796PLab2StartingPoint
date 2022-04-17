@@ -2,6 +2,8 @@ package com.example.grpc.client.grpcclient.service;
 
 import com.example.grpc.client.grpcclient.config.FileStorageProperties;
 import com.example.grpc.client.grpcclient.error.FileStorageException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -21,6 +23,8 @@ import java.util.stream.Stream;
 
 @Service
 public class FSStorageService implements StorageService {
+
+    private final Logger LOGGER = LoggerFactory.getLogger(FSStorageService.class);
 
     private final Path rootLocation;
 
@@ -82,6 +86,7 @@ public class FSStorageService implements StorageService {
 
     @Override
     public Resource loadAsResource(String filename) {
+        LOGGER.error("Attempting to load file as resource from storage service...");
         try {
             Path file = loadPath(filename);
             Resource resource = new UrlResource(file.toUri());
