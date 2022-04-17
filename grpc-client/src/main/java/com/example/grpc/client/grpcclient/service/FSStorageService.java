@@ -95,10 +95,12 @@ public class FSStorageService implements StorageService {
                 return resource;
             }
             else {
+                LOGGER.error("Failed to access file %s. Make sure the file exists and it is readable.");
                 throw new FileStorageException(String.format("Failed to access file %s. Make sure the file exists and it is readable.", filename));
             }
         }
         catch (MalformedURLException e) {
+            LOGGER.error("Error reading file, malformed URL exception thrown", e);
             throw new FileStorageException(String.format("Failed to read file %s", filename), e);
         }
 
