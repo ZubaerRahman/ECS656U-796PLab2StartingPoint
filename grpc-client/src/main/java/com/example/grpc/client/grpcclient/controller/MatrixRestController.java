@@ -38,6 +38,7 @@ public class MatrixRestController {
     //endpoint trigerred on file upload
     @GetMapping("/")
     public String listUploadedFiles(Model model) throws IOException {
+        System.out.println("Loading upload file page....");
         model.addAttribute("files",
                 storageService.loadAll()
                         .map(path -> MvcUriComponentsBuilder
@@ -56,6 +57,8 @@ public class MatrixRestController {
         String completeData;
         String[] lines;
 
+        System.out.println("Processing file upload....");
+
         if (!file.isEmpty()) {
             try {
                 //if we are uploading MATRIX A
@@ -64,12 +67,14 @@ public class MatrixRestController {
                     matrixA = makeArray(file);
                     //is null when exception was thrown, then show error
                     if (matrixA == null) {
+                        System.out.println("Invalid matrix uploaded....");
                         redirectAttributes.addFlashAttribute("message", "InvalidMatrix " + file.getOriginalFilename() + "!");
                         return "redirect:/";
                     }
                     //else check for matrix to be NxN with correct dimensions
                     else {
                         if (!isMatrixIsValidAndSquare(matrixA)) {
+                            System.out.println("Invalid matrix uploaded....");
                             redirectAttributes.addFlashAttribute("message", "InvalidMatrix !");
                             return "redirect:/";
                         }
@@ -77,6 +82,7 @@ public class MatrixRestController {
                         else {
                             matrixAUploaded = true;
                             storageService.storeFile(file);
+                            System.out.println("Completed file upload....");
                         }
 
                     }
