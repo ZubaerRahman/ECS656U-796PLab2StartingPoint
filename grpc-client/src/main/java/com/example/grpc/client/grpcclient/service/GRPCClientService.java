@@ -1,4 +1,4 @@
-package com.example.grpc.client.grpcclient;
+package com.example.grpc.client.grpcclient.service;
 
 import com.example.grpc.server.grpcserver.PingRequest;
 import com.example.grpc.server.grpcserver.PongResponse;
