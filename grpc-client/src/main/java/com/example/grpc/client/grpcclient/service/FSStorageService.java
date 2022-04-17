@@ -22,9 +22,9 @@ import java.util.stream.Stream;
 @Service
 public class FSStorageService implements StorageService {
 
-    @Autowired
     private final Path rootLocation;
 
+    @Autowired
     public FSStorageService(FileStorageProperties properties) {
         this.rootLocation = Paths.get(properties.getStorageLocation());
     }
