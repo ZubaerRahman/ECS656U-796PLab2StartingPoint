@@ -2,6 +2,8 @@ package com.example.grpc.client.grpcclient.controller;
 
 import com.example.grpc.client.grpcclient.error.FileStorageException;
 import com.example.grpc.client.grpcclient.service.StorageService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -30,6 +32,8 @@ public class MatrixRestController {
 
     private final StorageService storageService;
 
+    Logger logger = LoggerFactory.getLogger(MatrixRestController.class);
+
     @Autowired
     public MatrixRestController(StorageService storageService) {
         this.storageService = storageService;
@@ -38,7 +42,7 @@ public class MatrixRestController {
     //endpoint trigerred on file upload
     @GetMapping("/")
     public String listUploadedFiles(Model model) throws IOException {
-        System.out.println("Loading upload file page....");
+        logger.info("Loading upload file page....");
         model.addAttribute("files",
                 storageService.loadAll()
                         .map(path -> MvcUriComponentsBuilder
@@ -57,7 +61,7 @@ public class MatrixRestController {
         String completeData;
         String[] lines;
 
-        System.out.println("Processing file upload....");
+        logger.info("Processing file upload....");
 
         if (!file.isEmpty()) {
             try {
@@ -67,14 +71,14 @@ public class MatrixRestController {
                     matrixA = makeArray(file);
                     //is null when exception was thrown, then show error
                     if (matrixA == null) {
-                        System.out.println("Invalid matrix uploaded....");
+                        logger.error("File doesn't contain any matrix!");
                         redirectAttributes.addFlashAttribute("message", "InvalidMatrix " + file.getOriginalFilename() + "!");
                         return "redirect:/";
                     }
                     //else check for matrix to be NxN with correct dimensions
                     else {
                         if (!isMatrixIsValidAndSquare(matrixA)) {
-                            System.out.println("Invalid matrix uploaded....");
+                            logger.error("Invalid matrix uploaded!");
                             redirectAttributes.addFlashAttribute("message", "InvalidMatrix !");
                             return "redirect:/";
                         }
