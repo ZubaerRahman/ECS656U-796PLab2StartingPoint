@@ -89,6 +89,8 @@ public class FSStorageService implements StorageService {
         LOGGER.error("Attempting to load file as resource from storage service...");
         try {
             Path file = loadPath(filename);
+            System.out.println("Printing path file..");
+            System.out.println(file.toString());
             Resource resource = new UrlResource(file.toUri());
             System.out.println(resource.exists());
             System.out.println(resource.isReadable());
