@@ -1,6 +1,7 @@
 package com.example.grpc.client.grpcclient.controller;
 
 import com.example.grpc.client.grpcclient.error.FileStorageException;
+import com.example.grpc.client.grpcclient.service.GRPCClientService;
 import com.example.grpc.client.grpcclient.service.StorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
@@ -31,12 +33,14 @@ public class MatrixRestController {
     boolean matrixBUploaded=false;
 
     private final StorageService storageService;
+    private final GRPCClientService grpcClientService;
 
     Logger logger = LoggerFactory.getLogger(MatrixRestController.class);
 
     @Autowired
-    public MatrixRestController(StorageService storageService) {
+    public MatrixRestController(StorageService storageService, GRPCClientService grpcClientService) {
         this.storageService = storageService;
+        this.grpcClientService = grpcClientService;
     }
 
     //endpoint trigerred on file upload
@@ -139,6 +143,20 @@ public class MatrixRestController {
         logger.info("Returning file {} ...", filename);
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
                 "attachment; filename=\"" + file.getFilename() + "\"").body(file);
+    }
+
+    //if we are doing a classic calculation (no deadline)
+    @RequestMapping(value = "/", method = RequestMethod.POST, params = "standard")
+    public String classicCalc(HttpServletRequest request, Model uiModel, RedirectAttributes redirectAttributes) {
+
+        //pass infinite if no deadline
+        int [][]resArray=grpcClientService.multiplyMatrix(matrixA, matrixB, Long.MAX_VALUE);
+
+        return "uploadForm";
+//        System.out.println("classic");
+//        redirectAttributes.addAttribute("resArray", resArray);
+//
+//        return "redirect:/result/{resArray}";
     }
 
     @ExceptionHandler(FileStorageException.class)
