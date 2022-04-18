@@ -77,10 +77,10 @@ public class GRPCClientService {
 		List<int[][]> miniBlocksA = divideMatrixInBlocks(A);
 		System.out.println("Split block A succesfully");
 		System.out.println(miniBlocksA.toString());
+		printLineByLine(miniBlocksA.get(0));
 		printLineByLine(miniBlocksA.get(1));
 		printLineByLine(miniBlocksA.get(2));
 		printLineByLine(miniBlocksA.get(3));
-		printLineByLine(miniBlocksA.get(4));
 
 		System.out.println("Processing matrix B");
 
@@ -88,10 +88,10 @@ public class GRPCClientService {
 		List<int[][]> miniBlocksB = divideMatrixInBlocks(B);
 		System.out.println("Split block B succesfully");
 		System.out.println(miniBlocksB.toString());
+		printLineByLine(miniBlocksB.get(0));
 		printLineByLine(miniBlocksB.get(1));
 		printLineByLine(miniBlocksB.get(2));
 		printLineByLine(miniBlocksB.get(3));
-		printLineByLine(miniBlocksB.get(4));
 
 		return null;
 
