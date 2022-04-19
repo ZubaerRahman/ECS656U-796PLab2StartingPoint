@@ -183,7 +183,7 @@ public class GRPCClientService {
 		ManagedChannel[] channels = new ManagedChannel[1];
 		ArrayList<MatrixServiceBlockingStub> stubs = new ArrayList<MatrixServiceBlockingStub>();
 
-		String[] servers = new String[4];
+		String[] servers = new String[1];
 //		servers[0] = "34.122.39.117";
 		servers[0] = "35.202.188.249";
 //		servers[2] = "35.239.56.179";
