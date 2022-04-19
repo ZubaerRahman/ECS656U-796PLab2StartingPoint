@@ -114,7 +114,7 @@ public class GRPCClientService {
 		currentServer = 0;
 		ArrayList<MatrixResponse> addBlocks = new ArrayList<>();
 		MatrixResponse lastResponse = null;
-		int rows = A.length * 2;
+		int rows = matrixABlocks.length * 2;
 		int rowLength = rows / 2;
 		int index = 1;
 		for (int i = 0; i < responseMultiplicationBlocks.size(); i += rowLength) {
