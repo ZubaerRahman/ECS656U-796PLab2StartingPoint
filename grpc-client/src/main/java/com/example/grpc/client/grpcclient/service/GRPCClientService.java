@@ -197,6 +197,13 @@ public class GRPCClientService {
 		return stubs;
 	}
 
+	public static void printMatrixObject(MatrixBlock matrix) {
+		System.out.println("C00: " + matrix.getC00());
+		System.out.println("C01: " + matrix.getC01());
+		System.out.println("C10: " + matrix.getC10());
+		System.out.println("C11: " + matrix.getC11());
+	}
+
 	private static void printLineByLine(int [][]array){
 		for (int i=0; i<array.length; i++)
 		{
