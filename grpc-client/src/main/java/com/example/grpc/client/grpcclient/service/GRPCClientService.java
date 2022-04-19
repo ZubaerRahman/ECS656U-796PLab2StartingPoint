@@ -14,6 +14,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -93,14 +94,54 @@ public class GRPCClientService {
 		printLineByLine(miniBlocksB.get(2));
 		printLineByLine(miniBlocksB.get(3));
 
-		return null;
+		List<MatrixResponse> responseBlocks = getResult(miniBlocksA, miniBlocksB, deadline);
 
-//		List<Response> responseBlocks = getResult(miniBlocksA, miniBlocksB, deadline);
+		return null;
 
 //		int[][] finalResponse = createFinalResponse(responseBlocks, A.length, A[0].length);
 //		printLineByLine(finalResponse);
 
 //		return finalResponse;
+	}
+
+	//this method does all the calculations needed for the final result
+	static List<Response> getResult(List<int[][]> miniBlocksA, List<int[][]> miniBlocksB, long deadline) {
+		List<Response> responseMultiplicationBlocks = new ArrayList<>();
+		ArrayList<MultiplyServiceBlockingStub> stubs =null;
+
+		MatrixBlocks A[][] = create2dBlocks(miniBlocksA);
+		MatrixBlocks B[][] = create2dBlocks(miniBlocksB);
+
+		System.out.println("MatrixBlocks A");
+		System.out.println(A);
+		System.out.println("MatrixBlocks B");
+		System.out.println(A);
+
+		return null;
+	}
+
+	static MatrixBlocks[][] create2dBlocks(List<int[][]> miniBlocks) {
+
+		int sqr = (int) (Math.sqrt(Double.parseDouble("" + miniBlocks.size())));
+
+		MatrixBlocks C[][] = new MatrixBlocks[sqr][sqr];
+		int p = 0;
+		int rowLength = sqr;
+		for (int i = 0; i < rowLength; i++) {
+			Arrays.deepToString(miniBlocks.get(i));
+			for (int j = 0; j < rowLength; j++) {
+				C[i][j] = makeBlocks(miniBlocks.get(p));
+				p++;
+			}
+		}
+		return C;
+	}
+
+	public static MatrixBlocks makeBlocks(int[][] array) {
+		MatrixBlocks C = MatrixBlocks.newBuilder().setA1(array[0][0]).setB1(array[0][1]).setC1(array[1][0]).setD1(array[1][1])
+				.build();
+
+		return C;
 	}
 
 	static List<int[][]> divideMatrixInBlocks(int A[][]) {
