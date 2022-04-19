@@ -104,7 +104,7 @@ public class GRPCClientService {
 					if (currentServer == serversNeeded) {
 						currentServer = 0;
 					}
-					blocks.add(C);
+					responseMultiplicationBlocks.add(C);
 				}
 			}
 		}
