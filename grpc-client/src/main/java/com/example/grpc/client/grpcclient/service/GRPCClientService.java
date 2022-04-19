@@ -117,13 +117,13 @@ public class GRPCClientService {
 		int rows = A.length * 2;
 		int rowLength = rows / 2;
 		int index = 1;
-		for (int i = 0; i < blocks.size(); i += rowLength) {
+		for (int i = 0; i < responseMultiplicationBlocks.size(); i += rowLength) {
 			for (int j = i; j < rowLength * index; j += 2) {
 				if (j == i) {
 					lastResponse = stubs.get(currentServer)
-							.addBlock(requestFromBlockAddMatrix(blocks.get(j), blocks.get(j + 1)));
+							.addBlock(requestFromBlockAddMatrix(responseMultiplicationBlocks.get(j), responseMultiplicationBlocks.get(j + 1)));
 				} else {
-					lastResponse = stubs.get(currentServer).addBlock(requestFromBlockAddMatrix(lastResponse, blocks.get(j)));
+					lastResponse = stubs.get(currentServer).addBlock(requestFromBlockAddMatrix(lastResponse, responseMultiplicationBlocks.get(j)));
 					j--;
 				}
 			}
