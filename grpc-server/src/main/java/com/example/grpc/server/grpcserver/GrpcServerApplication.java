@@ -1,5 +1,6 @@
 package com.example.grpc.server.grpcserver;
 
+import io.grpc.BindableService;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import org.springframework.boot.SpringApplication;
@@ -13,7 +14,7 @@ public class GrpcServerApplication extends SpringBootServletInitializer {
 
 	public static void main(String[] args) throws IOException, InterruptedException {
 		Server server = ServerBuilder.forPort(9090)
-				.addService(new MatrixServiceImpl()).build();
+				.addService((BindableService) new MatrixServiceImpl()).build();
 
 		System.out.println("Starting server...");
 		server.start();
