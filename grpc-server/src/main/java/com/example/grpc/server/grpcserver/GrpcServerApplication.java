@@ -11,15 +11,13 @@ import java.io.IOException;
 @SpringBootApplication
 public class GrpcServerApplication extends SpringBootServletInitializer {
 
-	public static void main(String[] args) {
-		SpringApplication.run(GrpcServerApplication.class, args);
+	public static void main(String[] args) throws IOException, InterruptedException {
+		Server server = ServerBuilder.forPort(9090)
+				.addService(new MatrixServiceImpl()).build();
 
-//		Server server = ServerBuilder
-//				.forPort(8080)
-//				.addService(new HelloServiceImpl()).build();
-//
-//		server.start();
-//		server.awaitTermination();
+		System.out.println("Starting server...");
+		server.start();
+		System.out.println("Server started!");
+		server.awaitTermination();
 	}
-
 }
