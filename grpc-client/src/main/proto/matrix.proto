@@ -47,11 +47,11 @@ service MatrixService{
 //}
 
 message MatrixRequest {
-  MatrixBlocks A = 1;
-  MatrixBlocks B = 2;
+  MatrixBlock A = 1;
+  MatrixBlock B = 2;
 }
 
-message MatrixBlocks {
+message MatrixBlock {
   int32 c00 = 1;
   int32 c01 = 2;
   int32 c10 = 3;
@@ -59,7 +59,7 @@ message MatrixBlocks {
 }
 
 message MatrixResponse {
-  MatrixBlocks C = 1;
+  MatrixBlock C = 1;
 }
 
 

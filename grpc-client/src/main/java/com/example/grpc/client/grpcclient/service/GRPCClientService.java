@@ -1,11 +1,13 @@
 package com.example.grpc.client.grpcclient.service;
 
+import com.example.grpc.client.grpcclient.util.MatrixBlockUtils;
+import com.example.grpc.client.grpcclient.util.MatrixUtils;
 import com.example.grpc.server.grpcserver.PingRequest;
 import com.example.grpc.server.grpcserver.PongResponse;
 import com.example.grpc.server.grpcserver.PingPongServiceGrpc;
 import com.example.grpc.server.grpcserver.MatrixRequest;
 import com.example.grpc.server.grpcserver.MatrixResponse;
-import com.example.grpc.server.grpcserver.MatrixBlocks;
+import com.example.grpc.server.grpcserver.MatrixBlock;
 import com.example.grpc.server.grpcserver.MatrixServiceGrpc;
 import com.example.grpc.server.grpcserver.MatrixServiceGrpc.MatrixServiceBlockingStub;
 import io.grpc.ManagedChannel;
@@ -15,7 +17,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -32,51 +33,12 @@ public class GRPCClientService {
 		channel.shutdown();
 		return helloResponse.getPong();
     }
-//    public String add(){
-//		ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost",9090)
-//		.usePlaintext()
-//		.build();
-//		MatrixServiceGrpc.MatrixServiceBlockingStub stub
-//		 = MatrixServiceGrpc.newBlockingStub(channel);
-//		MatrixReply A=stub.addBlock(MatrixRequest.newBuilder()
-//			.setA00(1)
-//			.setA01(2)
-//			.setA10(5)
-//			.setA11(6)
-//			.setB00(1)
-//			.setB01(2)
-//			.setB10(5)
-//			.setB11(6)
-//			.build());
-//		String resp=A.getC00()+A.getC01()+A.getC10()+A.getC11()+"";
-//		return resp;
-//    }
-//
-//	public String multiply(){
-//		ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost",9090)
-//				.usePlaintext()
-//				.build();
-//		MatrixServiceGrpc.MatrixServiceBlockingStub stub
-//				= MatrixServiceGrpc.newBlockingStub(channel);
-//		MatrixReply A=stub.multiplyBlock(MatrixRequest.newBuilder()
-//				.setA00(1)
-//				.setA01(2)
-//				.setA10(5)
-//				.setA11(6)
-//				.setB00(2)
-//				.setB01(3)
-//				.setB10(6)
-//				.setB11(7)
-//				.build());
-//		String resp= A.getC00()+A.getC01()+A.getC10()+A.getC11()+"";
-//		return resp;
-//	}
 
 	public int[][] multiplyMatrix(int A[][], int B[][], long deadline) {
 		System.out.println("Processing matrix A");
 
 		printLineByLine(A);
-		List<int[][]> miniBlocksA = divideMatrixInBlocks(A);
+		List<int[][]> miniBlocksA = MatrixUtils.divideMatrixInBlocks(A);
 		System.out.println("Split block A succesfully");
 		System.out.println(miniBlocksA.toString());
 		printLineByLine(miniBlocksA.get(0));
@@ -87,7 +49,7 @@ public class GRPCClientService {
 		System.out.println("Processing matrix B");
 
 		printLineByLine(B);
-		List<int[][]> miniBlocksB = divideMatrixInBlocks(B);
+		List<int[][]> miniBlocksB = MatrixUtils.divideMatrixInBlocks(B);
 		System.out.println("Split block B succesfully");
 		System.out.println(miniBlocksB.toString());
 		printLineByLine(miniBlocksB.get(0));
@@ -108,96 +70,131 @@ public class GRPCClientService {
 	//this method does all the calculations needed for the final result
 	static List<MatrixResponse> getResult(List<int[][]> miniBlocksA, List<int[][]> miniBlocksB, long deadline) {
 		List<MatrixResponse> responseMultiplicationBlocks = new ArrayList<>();
-		ArrayList<MatrixServiceBlockingStub> stubs =null;
+		ArrayList<MatrixServiceBlockingStub> stubs = null;
 
-		MatrixBlocks A[][] = create2dBlocks(miniBlocksA);
-		MatrixBlocks B[][] = create2dBlocks(miniBlocksB);
+		MatrixBlock matrixABlocks[][] = MatrixBlockUtils.createArrayOfMatrixBlocks(miniBlocksA);
+		MatrixBlock matrixBBlocks[][] = MatrixBlockUtils.createArrayOfMatrixBlocks(miniBlocksB);
 
-		System.out.println("MatrixBlocks A");
-		System.out.println(A);
-		System.out.println("MatrixBlocks B");
-		System.out.println(A);
+//		System.out.println("MatrixBlock A");
+//		System.out.println(A);
+//		System.out.println("MatrixBlock B");
+//		System.out.println(A);
 
-		return null;
-	}
-
-	static MatrixBlocks[][] create2dBlocks(List<int[][]> miniBlocks) {
-
-		int sqr = (int) (Math.sqrt(Double.parseDouble("" + miniBlocks.size())));
-
-		MatrixBlocks C[][] = new MatrixBlocks[sqr][sqr];
-		int p = 0;
-		int rowLength = sqr;
-		for (int i = 0; i < rowLength; i++) {
-			Arrays.deepToString(miniBlocks.get(i));
-			for (int j = 0; j < rowLength; j++) {
-				C[i][j] = makeBlocks(miniBlocks.get(p));
-				p++;
-			}
-		}
-		return C;
-	}
-
-	public static MatrixBlocks makeBlocks(int[][] array) {
-		MatrixBlocks C = MatrixBlocks.newBuilder().setC00(array[0][0]).setC01(array[0][1]).setC10(array[1][0]).setC11(array[1][1])
-				.build();
-
-		return C;
-	}
-
-	static List<int[][]> divideMatrixInBlocks(int A[][]) {
-		List<int[][]> subArrays = new ArrayList<>();
-
-		int k = 2;
-		int n = A.length;
-
-		for (int i = 0; i < n - k + 1; i += 2) {
-
-			// column of first cell in current
-			// sub-square of size k x k
-			for (int j = 0; j < n - k + 1; j += 2) {
-
-				// current sub-square
-
-				boolean[][] assigned = new boolean[2][2];
-				int miniBlock[][] = new int[2][2];
-				for (int p = i; p < k + i; p++) {
-					int cycle = 0;
-					for (int q = j; q < k + j; q++) {
-
-						if (cycle == 0 && !assigned[0][0]) {
-							miniBlock[0][0] = A[p][q];
-							assigned[0][0] = true;
-							cycle++;
-							continue;
-
-						}
-						if (cycle == 0 && !assigned[1][0]) {
-							miniBlock[1][0] = A[p][q];
-							assigned[1][0] = true;
-							cycle++;
-							continue;
-						}
-						if (cycle == 1 && !assigned[0][1]) {
-							miniBlock[0][1] = A[p][q];
-							assigned[0][1] = true;
-							cycle++;
-							continue;
-						}
-						if (cycle == 1 && !assigned[1][1]) {
-							miniBlock[1][1] = A[p][q];
-							assigned[1][1] = true;
-							cycle++;
-							continue;
-						}
+		int serversNeeded = 1;
+		int currentServer = 0;
+		int length = matrixABlocks.length;
+		// we create all the servers as described in the getServers() function, but
+		// we only use what we need
+		stubs = getServers();
+		System.out.println("Running loop");
+		for (int i = 0; i < matrixABlocks.length; i++) {
+			for (int j = 0; j < matrixABlocks.length; j++) {
+				for (int k = 0; k < matrixABlocks.length; k++) {
+					MatrixBlock A1 = matrixABlocks[i][k];
+					MatrixBlock A2 = matrixBBlocks[k][j];
+					if (i == 0 && j == 0 && k == 0) {
+						System.out.println("Getting deadline");
+						serversNeeded = getDeadline(A1, A2, responseMultiplicationBlocks, stubs.get(currentServer), (miniBlocksA.size() * miniBlocksA.size()),
+								deadline);
+						continue;
 					}
+					// System.out.println("Multiplying blocks");
+					MatrixResponse C = stubs.get(currentServer).multiplyBlock(requestFromMatrix(A1, A2));
+					currentServer++;
+					if (currentServer == serversNeeded) {
+						currentServer = 0;
+					}
+					blocks.add(C);
 				}
-				subArrays.add(miniBlock);
 			}
 		}
+		System.out.println("Starting to add the blocks from the multiplication");
+		// here we add the blocks from the multiplication, starting with the block
+		// from server 0
+		currentServer = 0;
+		ArrayList<MatrixResponse> addBlocks = new ArrayList<>();
+		MatrixResponse lastResponse = null;
+		int rows = A.length * 2;
+		int rowLength = rows / 2;
+		int index = 1;
+		for (int i = 0; i < blocks.size(); i += rowLength) {
+			for (int j = i; j < rowLength * index; j += 2) {
+				if (j == i) {
+					lastResponse = stubs.get(currentServer)
+							.addBlock(requestFromBlockAddMatrix(blocks.get(j), blocks.get(j + 1)));
+				} else {
+					lastResponse = stubs.get(currentServer).addBlock(requestFromBlockAddMatrix(lastResponse, blocks.get(j)));
+					j--;
+				}
+			}
+			addBlocks.add(lastResponse);
+			// System.out.println("Added blocks from multiplication");
+			index++;
+			currentServer++;
+			// once we reach the last server, we start from server 0 again
+			if (currentServer == serversNeeded) {
+				currentServer = 0;
+			}
+		}
+		return addBlocks;
+	}
 
-		return subArrays;
+	static int getDeadline(MatrixBlock A1, MatrixBlock A2, List<MatrixResponse> responses, MatrixServiceBlockingStub stub,
+						   int numberOfBlocks, double deadline) {
+		 System.out.println("Deadline Matrix A1:");
+		 printMatrixObject(A1);
+		 System.out.println("Deadline Matrix A2:");
+		 printMatrixObject(A2);
+		System.out.println("Starting to get deadline");
+		// int deadlineMilis = (int) (deadline * 1000);
+		double startTime = System.currentTimeMillis();
+		System.out.println("Start time: " + startTime + ", running multiplyBlock");
+		MatrixResponse temp = stub.multiplyBlock(requestFromMatrix(A1, A2));
+		responses.add(temp);
+		System.out.println("Ran multiplyBlock sucessfully");
+		double endTime = System.currentTimeMillis();
+		double footprint = endTime - startTime;
+		System.out.println("Footprint is " + (int) footprint);
+		double totalTime = (numberOfBlocks - 1) * footprint;
+		System.out.println("Total time is " + (int) totalTime);
+		// double newDeadline = (int) deadline - footprint;
+		// System.out.println("New deadline is " + (int) newDeadline);
+		int serversNeeded = (int) (totalTime / deadline);
 
+		System.out.println("Elapsed time for 1 block: " + footprint);
+		System.out.println("Total elapsed time: " + totalTime);
+		System.out.println("Number of blocks: " + numberOfBlocks);
+
+		if (serversNeeded > 4) {
+			serversNeeded = 4;
+			System.out.println("Number of needed servers exceeds 4, setting to maximum of 4 servers");
+		} else if (serversNeeded <= 1) {
+			serversNeeded = 1;
+			System.out.println("Number of needed servers is less than 1, setting to 1 server");
+		}
+		System.out.println("The number of needed servers is " + serversNeeded);
+		return serversNeeded;
+	}
+
+	public static ArrayList<MatrixServiceBlockingStub> getServers() {
+		ManagedChannel[] channels = new ManagedChannel[4];
+		ArrayList<MatrixServiceBlockingStub> stubs = new ArrayList<MatrixServiceBlockingStub>();
+
+		String[] servers = new String[4];
+		servers[0] = "34.122.39.117";
+		servers[1] = "35.202.188.249";
+		servers[2] = "35.239.56.179";
+		servers[3] = "104.154.250.92";
+//		servers[4] = "10.128.0.15";
+//		servers[5] = "10.128.0.16";
+//		servers[6] = "10.128.0.17";
+//		servers[7] = "10.128.0.21";
+
+		for (int i = 0; i < servers.length; i++) {
+			channels[i] = ManagedChannelBuilder.forAddress(servers[i], 9090).usePlaintext().build();
+			stubs.add(MatrixServiceGrpc.newBlockingStub(channels[i]));
+		}
+		return stubs;
 	}
 
 	private static void printLineByLine(int [][]array){
