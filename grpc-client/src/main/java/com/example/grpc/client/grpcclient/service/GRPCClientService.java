@@ -7,6 +7,7 @@ import com.example.grpc.server.grpcserver.MatrixRequest;
 import com.example.grpc.server.grpcserver.MatrixResponse;
 import com.example.grpc.server.grpcserver.MatrixBlocks;
 import com.example.grpc.server.grpcserver.MatrixServiceGrpc;
+import com.example.grpc.server.grpcserver.MatrixServiceGrpc.MatrixServiceBlockingStub;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import net.devh.boot.grpc.client.inject.GrpcClient;
@@ -108,7 +109,7 @@ public class GRPCClientService {
 	//this method does all the calculations needed for the final result
 	static List<Response> getResult(List<int[][]> miniBlocksA, List<int[][]> miniBlocksB, long deadline) {
 		List<Response> responseMultiplicationBlocks = new ArrayList<>();
-		ArrayList<MultiplyServiceBlockingStub> stubs =null;
+		ArrayList<MatrixServiceBlockingStub> stubs =null;
 
 		MatrixBlocks A[][] = create2dBlocks(miniBlocksA);
 		MatrixBlocks B[][] = create2dBlocks(miniBlocksB);
