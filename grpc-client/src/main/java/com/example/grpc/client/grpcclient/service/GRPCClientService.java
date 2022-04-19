@@ -139,7 +139,7 @@ public class GRPCClientService {
 	}
 
 	public static MatrixBlocks makeBlocks(int[][] array) {
-		MatrixBlocks C = MatrixBlocks.newBuilder().setA1(array[0][0]).setB1(array[0][1]).setC1(array[1][0]).setD1(array[1][1])
+		MatrixBlocks C = MatrixBlocks.newBuilder().setC00(array[0][0]).setC01(array[0][1]).setC10(array[1][0]).setC11(array[1][1])
 				.build();
 
 		return C;
