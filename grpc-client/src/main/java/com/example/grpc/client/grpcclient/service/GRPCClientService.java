@@ -197,6 +197,17 @@ public class GRPCClientService {
 		return stubs;
 	}
 
+	public static MatrixRequest requestFromMatrix(MatrixBlock matrix1, MatrixBlock matrix2) {
+		MatrixRequest request = MatrixRequest.newBuilder().setA(matrix1).setB(matrix2).build();
+		return request;
+	}
+
+	public static MatrixRequest requestFromBlockAddMatrix(MatrixResponse matrix1, MatrixResponse matrix2) {
+		MatrixRequest request = MatrixRequest.newBuilder().setA(matrix1.getC()).setB(matrix2.getC()).build();
+		return request;
+	}
+
+
 	public static void printMatrixObject(MatrixBlock matrix) {
 		System.out.println("C00: " + matrix.getC00());
 		System.out.println("C01: " + matrix.getC01());
