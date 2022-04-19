@@ -106,8 +106,8 @@ public class GRPCClientService {
 	}
 
 	//this method does all the calculations needed for the final result
-	static List<Response> getResult(List<int[][]> miniBlocksA, List<int[][]> miniBlocksB, long deadline) {
-		List<Response> responseMultiplicationBlocks = new ArrayList<>();
+	static List<MatrixResponse> getResult(List<int[][]> miniBlocksA, List<int[][]> miniBlocksB, long deadline) {
+		List<MatrixResponse> responseMultiplicationBlocks = new ArrayList<>();
 		ArrayList<MatrixServiceBlockingStub> stubs =null;
 
 		MatrixBlocks A[][] = create2dBlocks(miniBlocksA);
