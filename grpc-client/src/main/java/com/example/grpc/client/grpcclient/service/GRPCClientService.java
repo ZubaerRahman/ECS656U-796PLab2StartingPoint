@@ -4,7 +4,8 @@ import com.example.grpc.server.grpcserver.PingRequest;
 import com.example.grpc.server.grpcserver.PongResponse;
 import com.example.grpc.server.grpcserver.PingPongServiceGrpc;
 import com.example.grpc.server.grpcserver.MatrixRequest;
-import com.example.grpc.server.grpcserver.MatrixReply;
+import com.example.grpc.server.grpcserver.MatrixResponse;
+import com.example.grpc.server.grpcserver.MatrixBlocks;
 import com.example.grpc.server.grpcserver.MatrixServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -31,45 +32,45 @@ public class GRPCClientService {
 		channel.shutdown();
 		return helloResponse.getPong();
     }
-    public String add(){
-		ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost",9090)
-		.usePlaintext()
-		.build();
-		MatrixServiceGrpc.MatrixServiceBlockingStub stub
-		 = MatrixServiceGrpc.newBlockingStub(channel);
-		MatrixReply A=stub.addBlock(MatrixRequest.newBuilder()
-			.setA00(1)
-			.setA01(2)
-			.setA10(5)
-			.setA11(6)
-			.setB00(1)
-			.setB01(2)
-			.setB10(5)
-			.setB11(6)
-			.build());
-		String resp=A.getC00()+A.getC01()+A.getC10()+A.getC11()+"";
-		return resp;
-    }
-
-	public String multiply(){
-		ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost",9090)
-				.usePlaintext()
-				.build();
-		MatrixServiceGrpc.MatrixServiceBlockingStub stub
-				= MatrixServiceGrpc.newBlockingStub(channel);
-		MatrixReply A=stub.multiplyBlock(MatrixRequest.newBuilder()
-				.setA00(1)
-				.setA01(2)
-				.setA10(5)
-				.setA11(6)
-				.setB00(2)
-				.setB01(3)
-				.setB10(6)
-				.setB11(7)
-				.build());
-		String resp= A.getC00()+A.getC01()+A.getC10()+A.getC11()+"";
-		return resp;
-	}
+//    public String add(){
+//		ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost",9090)
+//		.usePlaintext()
+//		.build();
+//		MatrixServiceGrpc.MatrixServiceBlockingStub stub
+//		 = MatrixServiceGrpc.newBlockingStub(channel);
+//		MatrixReply A=stub.addBlock(MatrixRequest.newBuilder()
+//			.setA00(1)
+//			.setA01(2)
+//			.setA10(5)
+//			.setA11(6)
+//			.setB00(1)
+//			.setB01(2)
+//			.setB10(5)
+//			.setB11(6)
+//			.build());
+//		String resp=A.getC00()+A.getC01()+A.getC10()+A.getC11()+"";
+//		return resp;
+//    }
+//
+//	public String multiply(){
+//		ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost",9090)
+//				.usePlaintext()
+//				.build();
+//		MatrixServiceGrpc.MatrixServiceBlockingStub stub
+//				= MatrixServiceGrpc.newBlockingStub(channel);
+//		MatrixReply A=stub.multiplyBlock(MatrixRequest.newBuilder()
+//				.setA00(1)
+//				.setA01(2)
+//				.setA10(5)
+//				.setA11(6)
+//				.setB00(2)
+//				.setB01(3)
+//				.setB10(6)
+//				.setB11(7)
+//				.build());
+//		String resp= A.getC00()+A.getC01()+A.getC10()+A.getC11()+"";
+//		return resp;
+//	}
 
 	public int[][] multiplyMatrix(int A[][], int B[][], long deadline) {
 		System.out.println("Processing matrix A");

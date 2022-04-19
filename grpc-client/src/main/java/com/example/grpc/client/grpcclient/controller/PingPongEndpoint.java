@@ -25,12 +25,12 @@ public class PingPongEndpoint {
     	public String ping() {
         	return grpcClientService.ping();
     	}
-        @GetMapping("/add")
-	public String add() {
-		return grpcClientService.add();
-	}
-	@GetMapping("/multiply")
-	public String multiply() {
-		return grpcClientService.multiply();
-	}
+//        @GetMapping("/add")
+//	public String add() {
+//		return grpcClientService.add();
+//	}
+//	@GetMapping("/multiply")
+//	public String multiply() {
+//		return grpcClientService.multiply();
+//	}
 }
