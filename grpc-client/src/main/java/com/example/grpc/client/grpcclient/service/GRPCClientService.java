@@ -87,7 +87,6 @@ public class GRPCClientService {
 		// we only use what we need
 		stubs = getServers();
 		System.out.println("Stubs:");
-		System.out.println("Stubs:");
 		System.out.println(stubs.toString());
 		for (int i = 0; i < matrixABlocks.length; i++) {
 			for (int j = 0; j < matrixABlocks.length; j++) {
@@ -96,7 +95,7 @@ public class GRPCClientService {
 					MatrixBlock A2 = matrixBBlocks[k][j];
 					if (i == 0 && j == 0 && k == 0) {
 						System.out.println("Getting deadline");
-						System.out.println("Getting deadline");
+						System.out.println("Current server");
 						System.out.println(stubs.get(currentServer).toString());
 						serversNeeded = getDeadline(A1, A2, responseMultiplicationBlocks, stubs.get(currentServer), (miniBlocksA.size() * miniBlocksA.size()),
 								deadline);
@@ -195,7 +194,7 @@ public class GRPCClientService {
 //		servers[7] = "10.128.0.21";
 
 		for (int i = 0; i < servers.length; i++) {
-			channels[i] = ManagedChannelBuilder.forAddress(servers[i], 9090).usePlaintext().build();
+			channels[i] = ManagedChannelBuilder.forAddress(servers[i], 9091).usePlaintext().build();
 			stubs.add(MatrixServiceGrpc.newBlockingStub(channels[i]));
 		}
 		return stubs;
