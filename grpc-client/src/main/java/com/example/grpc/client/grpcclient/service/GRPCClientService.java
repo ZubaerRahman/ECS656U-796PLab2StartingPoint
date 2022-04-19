@@ -11,7 +11,6 @@ import com.example.grpc.server.grpcserver.MatrixServiceGrpc.MatrixServiceBlockin
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import net.devh.boot.grpc.client.inject.GrpcClient;
-import org.apache.catalina.connector.Response;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Service;
 
