@@ -168,8 +168,8 @@ public class GRPCClientService {
 		System.out.println("Total elapsed time: " + totalTime);
 		System.out.println("Number of blocks: " + numberOfBlocks);
 
-		if (serversNeeded > 4) {
-			serversNeeded = 4;
+		if (serversNeeded > 1) {
+			serversNeeded = 1;
 			System.out.println("Number of needed servers exceeds 4, setting to maximum of 4 servers");
 		} else if (serversNeeded <= 1) {
 			serversNeeded = 1;
@@ -180,14 +180,14 @@ public class GRPCClientService {
 	}
 
 	public static ArrayList<MatrixServiceBlockingStub> getServers() {
-		ManagedChannel[] channels = new ManagedChannel[4];
+		ManagedChannel[] channels = new ManagedChannel[1];
 		ArrayList<MatrixServiceBlockingStub> stubs = new ArrayList<MatrixServiceBlockingStub>();
 
 		String[] servers = new String[4];
-		servers[0] = "34.122.39.117";
-		servers[1] = "35.202.188.249";
-		servers[2] = "35.239.56.179";
-		servers[3] = "104.154.250.92";
+//		servers[0] = "34.122.39.117";
+		servers[0] = "35.202.188.249";
+//		servers[2] = "35.239.56.179";
+//		servers[3] = "104.154.250.92";
 //		servers[4] = "10.128.0.15";
 //		servers[5] = "10.128.0.16";
 //		servers[6] = "10.128.0.17";
