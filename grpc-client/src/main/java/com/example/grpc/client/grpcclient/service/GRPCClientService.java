@@ -86,7 +86,9 @@ public class GRPCClientService {
 		// we create all the servers as described in the getServers() function, but
 		// we only use what we need
 		stubs = getServers();
-		System.out.println("Running loop");
+		System.out.println("Stubs:");
+		System.out.println("Stubs:");
+		System.out.println(stubs.toString());
 		for (int i = 0; i < matrixABlocks.length; i++) {
 			for (int j = 0; j < matrixABlocks.length; j++) {
 				for (int k = 0; k < matrixABlocks.length; k++) {
@@ -94,6 +96,8 @@ public class GRPCClientService {
 					MatrixBlock A2 = matrixBBlocks[k][j];
 					if (i == 0 && j == 0 && k == 0) {
 						System.out.println("Getting deadline");
+						System.out.println("Getting deadline");
+						System.out.println(stubs.get(currentServer).toString());
 						serversNeeded = getDeadline(A1, A2, responseMultiplicationBlocks, stubs.get(currentServer), (miniBlocksA.size() * miniBlocksA.size()),
 								deadline);
 						continue;
