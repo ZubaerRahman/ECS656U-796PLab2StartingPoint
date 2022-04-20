@@ -41,10 +41,6 @@ public class GRPCClientService {
 		List<int[][]> miniBlocksA = MatrixUtils.divideMatrixInBlocks(A);
 		System.out.println("Split block A succesfully");
 		System.out.println(miniBlocksA.toString());
-		printLineByLine(miniBlocksA.get(0));
-		printLineByLine(miniBlocksA.get(1));
-		printLineByLine(miniBlocksA.get(2));
-		printLineByLine(miniBlocksA.get(3));
 
 		System.out.println("Processing matrix B");
 
@@ -52,10 +48,6 @@ public class GRPCClientService {
 		List<int[][]> miniBlocksB = MatrixUtils.divideMatrixInBlocks(B);
 		System.out.println("Split block B succesfully");
 		System.out.println(miniBlocksB.toString());
-		printLineByLine(miniBlocksB.get(0));
-		printLineByLine(miniBlocksB.get(1));
-		printLineByLine(miniBlocksB.get(2));
-		printLineByLine(miniBlocksB.get(3));
 
 		List<MatrixResponse> responseBlocks = getResult(miniBlocksA, miniBlocksB, deadline);
 
