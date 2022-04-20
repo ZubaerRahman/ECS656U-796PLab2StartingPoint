@@ -147,16 +147,37 @@ public class MatrixRestController {
 
     //if we are doing a classic calculation (no deadline)
     @RequestMapping(value = "/", method = RequestMethod.POST, params = "standard")
-    public String classicCalc(HttpServletRequest request, Model uiModel, RedirectAttributes redirectAttributes) {
+    public String standardMatrixCalculation(HttpServletRequest request, Model uiModel, RedirectAttributes redirectAttributes) {
 
         //pass infinite if no deadline
         int [][]resArray=grpcClientService.multiplyMatrix(matrixA, matrixB, Long.MAX_VALUE);
 
-        return "uploadForm";
-//        System.out.println("classic");
-//        redirectAttributes.addAttribute("resArray", resArray);
-//
-//        return "redirect:/result/{resArray}";
+        redirectAttributes.addAttribute("resArray", resArray);
+
+        return "redirect:/result/{resArray}";
+    }
+
+    @RequestMapping(value="/result/{array}", method=RequestMethod.GET)
+    @ResponseBody
+    public String displayResult(@PathVariable int[] array)
+    {
+        int rows=(int)Math.sqrt((double)array.length);
+        int cols=(int)Math.sqrt((double)array.length);
+
+        String table="<table> ";
+        int element=0;
+        for (int i=0; i<rows;i++) {
+            table+="<tr>";
+            for(int j=0;j<cols;j++) {
+                table+="<td>"+array[element]+"</td>";
+                element++;
+            }
+            table+="</tr>";
+        }
+
+        table+="</table>";
+
+        return table;
     }
 
     @ExceptionHandler(FileStorageException.class)

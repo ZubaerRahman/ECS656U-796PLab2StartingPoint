@@ -43,11 +43,7 @@ public class GRPCClientService {
         int[][] finalResponse = createFinalResponse(responseBlocks, A.length, A[0].length);
         printLineByLine(finalResponse);
 
-        return null;
-
-
-
-//		return finalResponse;
+		return finalResponse;
     }
 
     //this method does all the calculations needed for the final result
@@ -57,11 +53,6 @@ public class GRPCClientService {
 
         MatrixBlock matrixABlocks[][] = MatrixBlockUtils.createArrayOfMatrixBlocks(miniBlocksA);
         MatrixBlock matrixBBlocks[][] = MatrixBlockUtils.createArrayOfMatrixBlocks(miniBlocksB);
-
-//		System.out.println("MatrixBlock A");
-//		System.out.println(A);
-//		System.out.println("MatrixBlock B");
-//		System.out.println(A);
 
         int serversNeeded = 1;
         int length = matrixABlocks.length;
@@ -77,7 +68,7 @@ public class GRPCClientService {
                     MatrixBlock A2 = matrixBBlocks[k][j];
 
                     // System.out.println("Multiplying blocks");
-                    MatrixResponse C = stubs.get(0).multiplyBlock(requestFromMatrix(A1, A2));
+                    MatrixResponse C = stubs.get(0).multiplyBlock(createMatrixRequestFromMatrix(A1, A2));
                     responseMultiplicationBlocks.add(C);
                 }
             }
@@ -94,6 +85,7 @@ public class GRPCClientService {
         int rowLength = rows / 2;
         int index = 1;
         for (int i = 0; i < responseMultiplicationBlocks.size(); i += rowLength) {
+            // no adding needed if only one response block
             if (responseMultiplicationBlocks.size() == 1) {
                 addBlocks.add(responseMultiplicationBlocks.get(0));
                 break;
@@ -122,7 +114,7 @@ public class GRPCClientService {
         return stubs;
     }
 
-    public static MatrixRequest requestFromMatrix(MatrixBlock matrix1, MatrixBlock matrix2) {
+    public static MatrixRequest createMatrixRequestFromMatrix(MatrixBlock matrix1, MatrixBlock matrix2) {
         MatrixRequest request = MatrixRequest.newBuilder().setA(matrix1).setB(matrix2).build();
         return request;
     }
