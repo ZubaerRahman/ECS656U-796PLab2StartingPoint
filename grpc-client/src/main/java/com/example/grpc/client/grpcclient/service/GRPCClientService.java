@@ -59,10 +59,12 @@ public class GRPCClientService {
 
 		List<MatrixResponse> responseBlocks = getResult(miniBlocksA, miniBlocksB, deadline);
 
+		int[][] finalResponse = createFinalResponse(responseBlocks, A.length, A[0].length);
+		printLineByLine(finalResponse);
+
 		return null;
 
-//		int[][] finalResponse = createFinalResponse(responseBlocks, A.length, A[0].length);
-//		printLineByLine(finalResponse);
+
 
 //		return finalResponse;
 	}
@@ -210,6 +212,25 @@ public class GRPCClientService {
 		return request;
 	}
 
+	private static int[][] createFinalResponse(List<MatrixResponse> responseBlocks, int rows, int columns) {
+
+		int response[][] = new int[rows][columns];
+
+
+		int block = 0;
+		for (int i = 0; i < rows; i +=2) {
+			for (int j = 0; j <columns ; j += 2) {
+
+				response[i][j] = responseBlocks.get(block).getC().getC00();
+				response[i][j + 1] = responseBlocks.get(block).getC().getC01();
+				response[i + 1][j] = responseBlocks.get(block).getC().getC10();
+				response[i + 1][j + 1] = responseBlocks.get(block).getC().getC11();
+				block++;
+			}
+		}
+
+		return response;
+	}
 
 	public static void printMatrixObject(MatrixBlock matrix) {
 		System.out.println("C00: " + matrix.getC00());
