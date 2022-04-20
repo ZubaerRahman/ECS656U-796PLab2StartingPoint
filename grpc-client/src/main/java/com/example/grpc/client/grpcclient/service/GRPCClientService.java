@@ -17,6 +17,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -82,6 +83,9 @@ public class GRPCClientService {
             }
         }
         System.out.println("Starting to add the blocks from the multiplication");
+        System.out.println("Response multiplication blocks");
+        System.out.println(responseMultiplicationBlocks.size());
+        System.out.println(Arrays.toString(responseMultiplicationBlocks.toArray()));
         // here we add the blocks from the multiplication, starting with the block
         // from server 0
         ArrayList<MatrixResponse> addBlocks = new ArrayList<>();
