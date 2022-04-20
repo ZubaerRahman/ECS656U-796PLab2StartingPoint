@@ -74,12 +74,7 @@ public class GRPCClientService {
                 for (int k = 0; k < matrixABlocks.length; k++) {
                     MatrixBlock A1 = matrixABlocks[i][k];
                     MatrixBlock A2 = matrixBBlocks[k][j];
-                    if (i == 0 && j == 0 && k == 0) {
-                        System.out.println("Getting deadline");
-                        System.out.println("Current server");
-                        System.out.println(stubs.get(0).toString());
-                        continue;
-                    }
+
                     // System.out.println("Multiplying blocks");
                     MatrixResponse C = stubs.get(0).multiplyBlock(requestFromMatrix(A1, A2));
                     responseMultiplicationBlocks.add(C);
@@ -97,8 +92,7 @@ public class GRPCClientService {
         for (int i = 0; i < responseMultiplicationBlocks.size(); i += rowLength) {
             for (int j = i; j < rowLength * index; j += 2) {
                 if (j == i) {
-                    lastResponse = stubs.get(0)
-                            .addBlock(requestFromBlockAddMatrix(responseMultiplicationBlocks.get(j), responseMultiplicationBlocks.get(j + 1)));
+                    lastResponse = stubs.get(0).addBlock(requestFromBlockAddMatrix(responseMultiplicationBlocks.get(j), responseMultiplicationBlocks.get(j + 1)));
                 } else {
                     lastResponse = stubs.get(0).addBlock(requestFromBlockAddMatrix(lastResponse, responseMultiplicationBlocks.get(j)));
                     j--;
