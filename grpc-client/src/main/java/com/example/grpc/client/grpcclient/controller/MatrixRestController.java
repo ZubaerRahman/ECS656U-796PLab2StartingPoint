@@ -159,25 +159,25 @@ public class MatrixRestController {
 
     @RequestMapping(value="/result/{array}", method=RequestMethod.GET)
     @ResponseBody
-    public String displayResult(@PathVariable int[] array)
+    public String displayMatrixResult(@PathVariable int[] array)
     {
         int rows=(int)Math.sqrt((double)array.length);
-        int cols=(int)Math.sqrt((double)array.length);
+        int columns=(int)Math.sqrt((double)array.length);
 
-        String table="<table> ";
+        StringBuilder table= new StringBuilder("<table style='border:1px solid black; border-spacing:0;'> ");
         int element=0;
         for (int i=0; i<rows;i++) {
-            table+="<tr>";
-            for(int j=0;j<cols;j++) {
-                table+="<td>"+array[element]+"</td>";
+            table.append("<tr>");
+            for(int j=0;j<columns;j++) {
+                table.append("<td style='border:1px solid black;'>").append(array[element]).append("</td>");
                 element++;
             }
-            table+="</tr>";
+            table.append("</tr>");
         }
 
-        table+="</table>";
+        table.append("</table>");
 
-        return table;
+        return table.toString();
     }
 
     @ExceptionHandler(FileStorageException.class)
