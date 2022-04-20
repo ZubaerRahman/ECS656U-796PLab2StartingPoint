@@ -94,6 +94,10 @@ public class GRPCClientService {
         int rowLength = rows / 2;
         int index = 1;
         for (int i = 0; i < responseMultiplicationBlocks.size(); i += rowLength) {
+            if (responseMultiplicationBlocks.size() == 1) {
+                addBlocks.add(responseMultiplicationBlocks.get(0));
+                break;
+            }
             for (int j = i; j < rowLength * index; j += 2) {
                 if (j == i) {
                     lastResponse = stubs.get(0).addBlock(requestFromBlockAddMatrix(responseMultiplicationBlocks.get(j), responseMultiplicationBlocks.get(j + 1)));
