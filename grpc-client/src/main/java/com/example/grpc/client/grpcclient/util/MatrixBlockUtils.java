@@ -18,7 +18,6 @@ public class MatrixBlockUtils {
         int p = 0;
 
         for (int i = 0; i < matrixBlocksWidth; i++) {
-            Arrays.deepToString(miniBlocks.get(i));
             for (int j = 0; j < matrixBlocksWidth; j++) {
                 twoDimentionalMatrixBlockArray[i][j] = makeMatrixBlock(miniBlocks.get(p));
                 p++;
