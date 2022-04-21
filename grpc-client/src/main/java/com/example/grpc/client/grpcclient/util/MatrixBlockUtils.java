@@ -37,4 +37,14 @@ public class MatrixBlockUtils {
         return C;
     }
 
+    public static MatrixRequest createMatrixRequestFromMatrix(MatrixBlock matrix1, MatrixBlock matrix2) {
+        MatrixRequest request = MatrixRequest.newBuilder().setA(matrix1).setB(matrix2).build();
+        return request;
+    }
+
+    public static MatrixRequest requestFromBlockAddMatrix(MatrixResponse matrix1, MatrixResponse matrix2) {
+        MatrixRequest request = MatrixRequest.newBuilder().setA(matrix1.getC()).setB(matrix2.getC()).build();
+        return request;
+    }
+
 }

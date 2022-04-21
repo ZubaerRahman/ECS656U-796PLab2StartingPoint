@@ -2,9 +2,6 @@ package com.example.grpc.client.grpcclient.service;
 
 import com.example.grpc.client.grpcclient.util.MatrixBlockUtils;
 import com.example.grpc.client.grpcclient.util.MatrixUtils;
-//import com.example.grpc.server.grpcserver.PingRequest;
-//import com.example.grpc.server.grpcserver.PongResponse;
-//import com.example.grpc.server.grpcserver.PingPongServiceGrpc;
 import com.example.grpc.server.grpcserver.MatrixRequest;
 import com.example.grpc.server.grpcserver.MatrixResponse;
 import com.example.grpc.server.grpcserver.MatrixBlock;
@@ -26,14 +23,14 @@ public class GRPCClientService {
     public int[][] multiplyMatrix(int A[][], int B[][]) {
         System.out.println("Processing matrix A");
 
-        printLineByLine(A);
+        MatrixUtils.printLineByLine(A);
         List<int[][]> miniBlocksA = MatrixUtils.divideMatrixInTwoByTwoBlocks(A);
         System.out.println("Split block A succesfully");
         System.out.println(miniBlocksA.toString());
 
         System.out.println("Processing matrix B");
 
-        printLineByLine(B);
+        MatrixUtils.printLineByLine(B);
         List<int[][]> miniBlocksB = MatrixUtils.divideMatrixInTwoByTwoBlocks(B);
         System.out.println("Split block B succesfully");
         System.out.println(miniBlocksB.toString());
@@ -41,7 +38,7 @@ public class GRPCClientService {
         List<MatrixResponse> responseBlocks = getResult(miniBlocksA, miniBlocksB);
 
         int[][] finalResponse = createFinalResponse(responseBlocks, A.length, A[0].length);
-        printLineByLine(finalResponse);
+        MatrixUtils.printLineByLine(finalResponse);
 
 		return finalResponse;
     }
@@ -56,29 +53,24 @@ public class GRPCClientService {
 
         int serversNeeded = 1;
         int length = matrixABlocks.length;
-        // we create all the servers as described in the getServers() function, but
-        // we only use what we need
+
+        // currently gets only one stub, originally designed to get multiple
         stubs = getServerStubs();
-        System.out.println("Stubs:");
-        System.out.println(stubs.toString());
+
         for (int i = 0; i < matrixABlocks.length; i++) {
             for (int j = 0; j < matrixABlocks.length; j++) {
                 for (int k = 0; k < matrixABlocks.length; k++) {
                     MatrixBlock A1 = matrixABlocks[i][k];
                     MatrixBlock A2 = matrixBBlocks[k][j];
-
-                    // System.out.println("Multiplying blocks");
-                    MatrixResponse C = stubs.get(0).multiplyBlock(createMatrixRequestFromMatrix(A1, A2));
+                    MatrixResponse C = stubs.get(0).multiplyBlock(MatrixBlockUtils.createMatrixRequestFromMatrix(A1, A2));
                     responseMultiplicationBlocks.add(C);
                 }
             }
         }
+
         System.out.println("Starting to add the blocks from the multiplication");
-        System.out.println("Response multiplication blocks");
-        System.out.println(responseMultiplicationBlocks.size());
-        System.out.println(Arrays.toString(responseMultiplicationBlocks.toArray()));
+
         // here we add the blocks from the multiplication, starting with the block
-        // from server 0
         ArrayList<MatrixResponse> addBlocks = new ArrayList<>();
         MatrixResponse lastResponse = null;
         int rows = matrixABlocks.length * 2;
@@ -92,9 +84,9 @@ public class GRPCClientService {
             }
             for (int j = i; j < rowLength * index; j += 2) {
                 if (j == i) {
-                    lastResponse = stubs.get(0).addBlock(requestFromBlockAddMatrix(responseMultiplicationBlocks.get(j), responseMultiplicationBlocks.get(j + 1)));
+                    lastResponse = stubs.get(0).addBlock(MatrixBlockUtils.requestFromBlockAddMatrix(responseMultiplicationBlocks.get(j), responseMultiplicationBlocks.get(j + 1)));
                 } else {
-                    lastResponse = stubs.get(0).addBlock(requestFromBlockAddMatrix(lastResponse, responseMultiplicationBlocks.get(j)));
+                    lastResponse = stubs.get(0).addBlock(MatrixBlockUtils.requestFromBlockAddMatrix(lastResponse, responseMultiplicationBlocks.get(j)));
                     j--;
                 }
             }
@@ -114,20 +106,8 @@ public class GRPCClientService {
         return stubs;
     }
 
-    public static MatrixRequest createMatrixRequestFromMatrix(MatrixBlock matrix1, MatrixBlock matrix2) {
-        MatrixRequest request = MatrixRequest.newBuilder().setA(matrix1).setB(matrix2).build();
-        return request;
-    }
-
-    public static MatrixRequest requestFromBlockAddMatrix(MatrixResponse matrix1, MatrixResponse matrix2) {
-        MatrixRequest request = MatrixRequest.newBuilder().setA(matrix1.getC()).setB(matrix2.getC()).build();
-        return request;
-    }
-
     private static int[][] createFinalResponse(List<MatrixResponse> responseBlocks, int rows, int columns) {
-
         int response[][] = new int[rows][columns];
-
 
         int block = 0;
         for (int i = 0; i < rows; i +=2) {
@@ -144,24 +124,6 @@ public class GRPCClientService {
         return response;
     }
 
-    public static void printMatrixObject(MatrixBlock matrix) {
-        System.out.println("C00: " + matrix.getC00());
-        System.out.println("C01: " + matrix.getC01());
-        System.out.println("C10: " + matrix.getC10());
-        System.out.println("C11: " + matrix.getC11());
-    }
 
-    private static void printLineByLine(int [][]array){
-        for (int i=0; i<array.length; i++)
-        {
-            for (int j=0; j<array[i].length;j++)
-            {
-                System.out.print(array[i][j]+" ");
-            }
-            System.out.println("");
-        }
-
-        return;
-    }
 
 }

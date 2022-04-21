@@ -113,4 +113,13 @@ public class MatrixUtils {
         return matrixIsValidAndSquare;
     }
 
+    public static void printLineByLine(int[][] array){
+        for (int[] ints : array) {
+            for (int anInt : ints) {
+                System.out.print(anInt + " ");
+            }
+            System.out.println("");
+        }
+    }
+
 }

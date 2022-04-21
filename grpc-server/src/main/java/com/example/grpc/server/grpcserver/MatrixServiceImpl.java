@@ -8,15 +8,6 @@ public class MatrixServiceImpl extends MatrixServiceGrpc.MatrixServiceImplBase
 {
 	private static final int MAX = 4;
 
-	public static int[][] matrixToArray(MatrixBlocks matrix) {
-		int[][] temp = new int[MAX][MAX];
-		temp[0][0] = matrix.getC00();
-		temp[0][1] = matrix.getC01();
-		temp[1][0] = matrix.getC10();
-		temp[1][1] = matrix.getC11();
-		return temp;
-	}
-
 	public MatrixBlocks arrayToMatrix(int[][] array) {
 		MatrixBlocks C = MatrixBlocks.newBuilder()
 				.setC00(array[0][0])
@@ -60,8 +51,8 @@ public class MatrixServiceImpl extends MatrixServiceGrpc.MatrixServiceImplBase
 	@Override
 	public void addBlock(MatrixRequest request, StreamObserver<MatrixResponse> reply) {
 		System.out.println("Request received from client:\n" + request);
-		int[][] matrixA = matrixToArray(request.getA());
-		int[][] matrixB = matrixToArray(request.getB());
+		int[][] matrixA = convertMatrixBlocksToArray(request.getA());
+		int[][] matrixB = convertMatrixBlocksToArray(request.getB());
 		int[][] newMatrix = performMatrixBlockAddition(matrixA, matrixB);
 		MatrixResponse response = MatrixResponse.newBuilder()
 				.setC(arrayToMatrix(newMatrix))
@@ -73,9 +64,9 @@ public class MatrixServiceImpl extends MatrixServiceGrpc.MatrixServiceImplBase
 	@Override
 	public void multiplyBlock(MatrixRequest request, StreamObserver<MatrixResponse> reply) {
 		System.out.println("Request received from client:\n" + request);
-		int[][] matrixA = matrixToArray(request.getA());
+		int[][] matrixA = convertMatrixBlocksToArray(request.getA());
 		printMatrix(matrixA);
-		int[][] matrixB = matrixToArray(request.getB());
+		int[][] matrixB = convertMatrixBlocksToArray(request.getB());
 		printMatrix(matrixB);
 		int[][] newMatrix = performMatrixBlockMultiplication(matrixA, matrixB);
 		MatrixResponse response = MatrixResponse.newBuilder()
@@ -84,6 +75,15 @@ public class MatrixServiceImpl extends MatrixServiceGrpc.MatrixServiceImplBase
 		System.out.println("Response matrix is: \n" + response);
 		reply.onNext(response);
 		reply.onCompleted();
+	}
+
+	private int[][] convertMatrixBlocksToArray(MatrixBlocks matrixBlocks) {
+		int[][] result = new int[MAX][MAX];
+		result[0][0] = matrixBlocks.getC00();
+		result[0][1] = matrixBlocks.getC01();
+		result[1][0] = matrixBlocks.getC10();
+		result[1][1] = matrixBlocks.getC11();
+		return result;
 	}
 
 }
