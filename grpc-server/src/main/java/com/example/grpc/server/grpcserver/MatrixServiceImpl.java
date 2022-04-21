@@ -51,8 +51,8 @@ public class MatrixServiceImpl extends MatrixServiceGrpc.MatrixServiceImplBase
 	@Override
 	public void addBlock(MatrixRequest request, StreamObserver<MatrixResponse> reply) {
 		System.out.println("Request received from client:\n" + request);
-		int[][] matrixA = convertMatrixBlocksToArray(request.getA());
-		int[][] matrixB = convertMatrixBlocksToArray(request.getB());
+		int[][] matrixA = convertMatrixBlockToArray(request.getA());
+		int[][] matrixB = convertMatrixBlockToArray(request.getB());
 		int[][] newMatrix = performMatrixBlockAddition(matrixA, matrixB);
 		MatrixResponse response = MatrixResponse.newBuilder()
 				.setC(arrayToMatrixBlock(newMatrix))
