@@ -21,21 +21,10 @@ import java.util.List;
 public class GRPCClientService {
 
     public int[][] multiplyMatrix(int A[][], int B[][]) {
-        System.out.println("Processing matrix A");
+        List<int[][]> twoByTwoBlocksA = MatrixUtils.divideMatrixInTwoByTwoBlocks(A);
+        List<int[][]> twoByTwoBlocksB = MatrixUtils.divideMatrixInTwoByTwoBlocks(B);
 
-        MatrixUtils.printLineByLine(A);
-        List<int[][]> miniBlocksA = MatrixUtils.divideMatrixInTwoByTwoBlocks(A);
-        System.out.println("Split block A succesfully");
-        System.out.println(miniBlocksA.toString());
-
-        System.out.println("Processing matrix B");
-
-        MatrixUtils.printLineByLine(B);
-        List<int[][]> miniBlocksB = MatrixUtils.divideMatrixInTwoByTwoBlocks(B);
-        System.out.println("Split block B succesfully");
-        System.out.println(miniBlocksB.toString());
-
-        List<MatrixResponse> responseBlocks = getResult(miniBlocksA, miniBlocksB);
+        List<MatrixResponse> responseBlocks = getMultiplicationResult(twoByTwoBlocksA, twoByTwoBlocksB);
 
         int[][] finalResponse = createFinalResponse(responseBlocks, A.length, A[0].length);
         MatrixUtils.printLineByLine(finalResponse);
@@ -44,7 +33,7 @@ public class GRPCClientService {
     }
 
     //this method does all the calculations needed for the final result
-    static List<MatrixResponse> getResult(List<int[][]> miniBlocksA, List<int[][]> miniBlocksB) {
+    static List<MatrixResponse> getMultiplicationResult(List<int[][]> miniBlocksA, List<int[][]> miniBlocksB) {
         List<MatrixResponse> responseMultiplicationBlocks = new ArrayList<>();
         ArrayList<MatrixServiceBlockingStub> stubs = null;
 
@@ -91,7 +80,6 @@ public class GRPCClientService {
                 }
             }
             addBlocks.add(lastResponse);
-            // System.out.println("Added blocks from multiplication");
             index++;
         }
         return addBlocks;
@@ -106,12 +94,12 @@ public class GRPCClientService {
         return stubs;
     }
 
-    private static int[][] createFinalResponse(List<MatrixResponse> responseBlocks, int rows, int columns) {
+    private int[][] createFinalResponse(List<MatrixResponse> responseBlocks, int rows, int columns) {
         int response[][] = new int[rows][columns];
 
         int block = 0;
         for (int i = 0; i < rows; i +=2) {
-            for (int j = 0; j <columns ; j += 2) {
+            for (int j = 0; j < columns; j += 2) {
 
                 response[i][j] = responseBlocks.get(block).getC().getC00();
                 response[i][j + 1] = responseBlocks.get(block).getC().getC01();

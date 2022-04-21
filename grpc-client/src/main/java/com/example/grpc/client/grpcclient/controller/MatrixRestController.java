@@ -40,7 +40,6 @@ public class MatrixRestController {
         this.grpcClientService = grpcClientService;
     }
 
-    //endpoint trigerred on file upload
     @GetMapping("/")
     public String listUploadedFiles(Model model) throws IOException {
         logger.info("Loading upload file page...");
@@ -53,7 +52,6 @@ public class MatrixRestController {
         return "uploadForm";
     }
 
-    //handling file upload and checking for correct dimensions of the matrix
     @PostMapping("/")
     public String handleFileUpload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
         logger.info("Processing file upload....");
@@ -132,13 +130,10 @@ public class MatrixRestController {
 
     @RequestMapping(value = "/", method = RequestMethod.POST, params = "standard")
     public String standardMatrixCalculation(HttpServletRequest request, Model uiModel, RedirectAttributes redirectAttributes) {
+        int[][] resultMatrix = grpcClientService.multiplyMatrix(matrixA, matrixB);
+        redirectAttributes.addAttribute("resultMatrix", resultMatrix);
 
-        //pass infinite if no deadline
-        int [][]resArray=grpcClientService.multiplyMatrix(matrixA, matrixB);
-
-        redirectAttributes.addAttribute("resArray", resArray);
-
-        return "redirect:/result/{resArray}";
+        return "redirect:/result/{resultMatrix}";
     }
 
     @RequestMapping(value="/result/{array}", method=RequestMethod.GET)

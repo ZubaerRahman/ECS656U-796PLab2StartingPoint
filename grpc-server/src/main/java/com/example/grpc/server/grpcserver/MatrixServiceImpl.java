@@ -8,7 +8,7 @@ public class MatrixServiceImpl extends MatrixServiceGrpc.MatrixServiceImplBase
 {
 	private static final int MAX = 4;
 
-	public MatrixBlocks arrayToMatrix(int[][] array) {
+	public MatrixBlock arrayToMatrixBlock(int[][] array) {
 		MatrixBlocks C = MatrixBlocks.newBuilder()
 				.setC00(array[0][0])
 				.setC01(array[0][1])
@@ -29,20 +29,20 @@ public class MatrixServiceImpl extends MatrixServiceGrpc.MatrixServiceImplBase
 		return;
 	}
 
-	public static int[][] performMatrixBlockMultiplication(int A[][], int B[][]) {
-		int C[][] = new int[MAX][MAX];
-		C[0][0] = A[0][0] * B[0][0] + A[0][1] * B[1][0];
-		C[0][1] = A[0][0] * B[0][1] + A[0][1] * B[1][1];
-		C[1][0] = A[1][0] * B[0][0] + A[1][1] * B[1][0];
-		C[1][1] = A[1][0] * B[0][1] + A[1][1] * B[1][1];
-		return C;
+	private int[][] performMatrixBlockMultiplication(int matrixA[][], int matrixB[][]) {
+		int[][] resultMatrixC = new int[MAX][MAX];
+		resultMatrixC[0][0] = matrixA[0][0] * matrixB[0][0] + matrixA[0][1] * matrixB[1][0];
+		resultMatrixC[0][1] = matrixA[0][0] * matrixB[0][1] + matrixA[0][1] * matrixB[1][1];
+		resultMatrixC[1][0] = matrixA[1][0] * matrixB[0][0] + matrixA[1][1] * matrixB[1][0];
+		resultMatrixC[1][1] = matrixA[1][0] * matrixB[0][1] + matrixA[1][1] * matrixB[1][1];
+		return resultMatrixC;
 	}
 
-	public static int[][] performMatrixBlockAddition(int A[][], int B[][]) {
-		int C[][] = new int[MAX][MAX];
-		for (int i = 0; i < C.length; i++) {
-			for (int j = 0; j < C.length; j++) {
-				C[i][j] = A[i][j] + B[i][j];
+	private int[][] performMatrixBlockAddition(int matrixA[][], int matrixB[][]) {
+		int resultMatrixC[][] = new int[MAX][MAX];
+		for (int i = 0; i < resultMatrixC.length; i++) {
+			for (int j = 0; j < resultMatrixC.length; j++) {
+				resultMatrixC[i][j] = matrixA[i][j] + matrixB[i][j];
 			}
 		}
 		return C;
@@ -55,7 +55,7 @@ public class MatrixServiceImpl extends MatrixServiceGrpc.MatrixServiceImplBase
 		int[][] matrixB = convertMatrixBlocksToArray(request.getB());
 		int[][] newMatrix = performMatrixBlockAddition(matrixA, matrixB);
 		MatrixResponse response = MatrixResponse.newBuilder()
-				.setC(arrayToMatrix(newMatrix))
+				.setC(arrayToMatrixBlock(newMatrix))
 				.build();
 		reply.onNext(response);
 		reply.onCompleted();
@@ -70,7 +70,7 @@ public class MatrixServiceImpl extends MatrixServiceGrpc.MatrixServiceImplBase
 		printMatrix(matrixB);
 		int[][] newMatrix = performMatrixBlockMultiplication(matrixA, matrixB);
 		MatrixResponse response = MatrixResponse.newBuilder()
-				.setC(arrayToMatrix(newMatrix))
+				.setC(arrayToMatrixBlock(newMatrix))
 				.build();
 		System.out.println("Response matrix is: \n" + response);
 		reply.onNext(response);
