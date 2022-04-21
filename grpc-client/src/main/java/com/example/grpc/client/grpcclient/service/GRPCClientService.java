@@ -66,7 +66,7 @@ public class GRPCClientService {
         for (int i = 0; i < responseMultiplicationBlocks.size(); i += rowLength) {
             // no adding needed if only one response block
             if (responseMultiplicationBlocks.size() == 1) {
-                addBlocks.add(responseMultiplicationBlocks.get(0));
+                responseadditionBlocks.add(responseMultiplicationBlocks.get(0));
                 break;
             }
             for (int j = i; j < rowLength * index; j += 2) {
