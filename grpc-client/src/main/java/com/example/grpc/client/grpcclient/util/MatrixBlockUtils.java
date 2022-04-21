@@ -15,11 +15,13 @@ public class MatrixBlockUtils {
         int matrixBlocksWidth = (int) (Math.sqrt(Double.parseDouble("" + miniBlocks.size())));
 
         MatrixBlock[][] twoDimentionalMatrixBlockArray = new MatrixBlock[matrixBlocksWidth][matrixBlocksWidth];
+        int p = 0;
 
         for (int i = 0; i < matrixBlocksWidth; i++) {
             Arrays.deepToString(miniBlocks.get(i));
             for (int j = 0; j < matrixBlocksWidth; j++) {
-                twoDimentionalMatrixBlockArray[i][j] = makeMatrixBlock(miniBlocks.get(j));
+                twoDimentionalMatrixBlockArray[i][j] = makeMatrixBlock(miniBlocks.get(p));
+                p++;
             }
         }
 
