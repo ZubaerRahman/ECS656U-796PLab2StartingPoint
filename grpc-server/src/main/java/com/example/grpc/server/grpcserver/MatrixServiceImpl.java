@@ -45,7 +45,7 @@ public class MatrixServiceImpl extends MatrixServiceGrpc.MatrixServiceImplBase
 				resultMatrixC[i][j] = matrixA[i][j] + matrixB[i][j];
 			}
 		}
-		return C;
+		return resultMatrixC;
 	}
 
 	@Override
