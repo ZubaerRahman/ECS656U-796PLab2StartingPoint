@@ -9,7 +9,7 @@ public class MatrixServiceImpl extends MatrixServiceGrpc.MatrixServiceImplBase
 	private static final int MAX = 4;
 
 	public MatrixBlock arrayToMatrixBlock(int[][] array) {
-		MatrixBlocks C = MatrixBlocks.newBuilder()
+		MatrixBlock C = MatrixBlock.newBuilder()
 				.setC00(array[0][0])
 				.setC01(array[0][1])
 				.setC10(array[1][0])
