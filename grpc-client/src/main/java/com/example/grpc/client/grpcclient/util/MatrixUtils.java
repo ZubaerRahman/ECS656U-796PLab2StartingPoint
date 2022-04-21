@@ -1,116 +1,116 @@
 package com.example.grpc.client.grpcclient.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MatrixUtils {
 
-    //create array from file
-    public static int[][] makeArray (MultipartFile file){
-        List<int[]> cells =new ArrayList<int[]>();
+    static Logger logger = LoggerFactory.getLogger(MatrixUtils.class);
+
+    public static int[][] createTwoDimentionalArrayFromFileData (MultipartFile file){
+        List<int[]> matrixCells = new ArrayList<>();
         try {
             byte[] bytes;
             String completeData;
-            String[] lines ;
-
+            String[] lineArray ;
             bytes=file.getBytes();
             completeData = new String(bytes);
-            lines = completeData.split("\r\n");
-            for (String line: lines) {
-                String [] cellsString=line.split(" ");
-                int []cellsInt=new int[cellsString.length];
-                for(int i=0; i<cellsString.length;i++) {
-                    cellsInt[i]=(int)Integer.valueOf(cellsString[i]);
+            lineArray = completeData.split("\r\n");
+
+            for (String singleLine: lineArray) {
+                String [] matrixCellsStrings=singleLine.split(" ");
+                int[] matrixCellValues = new int[matrixCellsStrings.length];
+                for(int i = 0; i < matrixCellsStrings.length; i++) {
+                    matrixCellValues[i] = Integer.parseInt(matrixCellsStrings[i]);
 
                 }
-                cells.add(cellsInt);
+                matrixCells.add(matrixCellValues);
             }
         }
         catch (Exception e) {
-            System.out.println("error");
+            logger.error("An error has occurred converting the file to a matrix.");
             return null;
         }
 
-        int [][]cellsArray=create2dArrayFromList(cells);
-        return cellsArray;
+        return create2dArrayFromList(matrixCells);
     }
 
-    public static List<int[][]> divideMatrixInBlocks(int A[][]) {
-        List<int[][]> subArrays = new ArrayList<>();
+    public static List<int[][]> divideMatrixInTwoByTwoBlocks(int A[][]) {
+        List<int[][]> twoByTwoBlockList = new ArrayList<>();
 
-        int k = 2;
-        int n = A.length;
+        int mainMatrixWidth = A.length;
+        int blockWidth = 2;
 
-        for (int i = 0; i < n - k + 1; i += 2) {
+        for (int i = 0; i < mainMatrixWidth - blockWidth + 1; i += 2) {
+            for (int j = 0; j < mainMatrixWidth - blockWidth + 1; j += 2) {
+                boolean[][] cellValuesPresent = new boolean[2][2];
+                int[][] twoByTwoBlock = new int[2][2];
+                for (int p = i; p < blockWidth + i; p++) {
+                    int step = 0;
+                    for (int q = j; q < blockWidth + j; q++) {
 
-            // column of first cell in current
-            // sub-square of size k x k
-            for (int j = 0; j < n - k + 1; j += 2) {
-
-                // current sub-square
-
-                boolean[][] assigned = new boolean[2][2];
-                int miniBlock[][] = new int[2][2];
-                for (int p = i; p < k + i; p++) {
-                    int cycle = 0;
-                    for (int q = j; q < k + j; q++) {
-
-                        if (cycle == 0 && !assigned[0][0]) {
-                            miniBlock[0][0] = A[p][q];
-                            assigned[0][0] = true;
-                            cycle++;
+                        if (step == 0 && !cellValuesPresent[0][0]) {
+                            twoByTwoBlock[0][0] = A[p][q];
+                            cellValuesPresent[0][0] = true;
+                            step++;
                             continue;
 
                         }
-                        if (cycle == 0 && !assigned[1][0]) {
-                            miniBlock[1][0] = A[p][q];
-                            assigned[1][0] = true;
-                            cycle++;
+                        if (step == 0 && !cellValuesPresent[1][0]) {
+                            twoByTwoBlock[1][0] = A[p][q];
+                            cellValuesPresent[1][0] = true;
+                            step++;
                             continue;
                         }
-                        if (cycle == 1 && !assigned[0][1]) {
-                            miniBlock[0][1] = A[p][q];
-                            assigned[0][1] = true;
-                            cycle++;
+                        if (step == 1 && !cellValuesPresent[0][1]) {
+                            twoByTwoBlock[0][1] = A[p][q];
+                            cellValuesPresent[0][1] = true;
+                            step++;
                             continue;
                         }
-                        if (cycle == 1 && !assigned[1][1]) {
-                            miniBlock[1][1] = A[p][q];
-                            assigned[1][1] = true;
-                            cycle++;
-                            continue;
+                        if (step == 1 && !cellValuesPresent[1][1]) {
+                            twoByTwoBlock[1][1] = A[p][q];
+                            cellValuesPresent[1][1] = true;
+                            step++;
                         }
                     }
                 }
-                subArrays.add(miniBlock);
+
+                twoByTwoBlockList.add(twoByTwoBlock);
             }
         }
 
-        return subArrays;
-
+        return twoByTwoBlockList;
     }
 
-    public static int [][] create2dArrayFromList(List<int[]> array){
-        int rows=array.size();
-        int cols=array.get(0).length;
-        int res[][] = new int[rows][cols];
+    public static int [][] create2dArrayFromList(List<int[]> list){
+        int rows=list.size();
+        int columns=list.get(0).length;
+        int[][] twoDimensionalArray = new int[rows][columns];
         for (int i=0; i<rows;i++) {
-            for (int j=0;j<cols;j++) {
-                res[i][j]=array.get(i)[j];
+            for (int j=0;j<columns;j++) {
+                twoDimensionalArray[i][j]=list.get(i)[j];
             }
         }
-
-        return res;
+        return twoDimensionalArray;
     }
 
     public static boolean isPowerOfTwo(int number) {
         return number > 0 && ((number & (number - 1)) == 0);
     }
 
+    public static boolean isMatrixIsValidAndSquare(int [][] matrix) {
+        int lines = matrix.length;
+        int columns = matrix[0].length;
 
+        boolean matrixIsValidAndSquare = !(lines < 1 || columns < 1 || lines != columns || !isPowerOfTwo(lines) || !isPowerOfTwo(columns));
+
+        return matrixIsValidAndSquare;
+    }
 
 }

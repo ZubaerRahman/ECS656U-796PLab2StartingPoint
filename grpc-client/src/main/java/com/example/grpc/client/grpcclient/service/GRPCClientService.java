@@ -23,22 +23,22 @@ import java.util.List;
 @Service
 public class GRPCClientService {
 
-    public int[][] multiplyMatrix(int A[][], int B[][], long deadline) {
+    public int[][] multiplyMatrix(int A[][], int B[][]) {
         System.out.println("Processing matrix A");
 
         printLineByLine(A);
-        List<int[][]> miniBlocksA = MatrixUtils.divideMatrixInBlocks(A);
+        List<int[][]> miniBlocksA = MatrixUtils.divideMatrixInTwoByTwoBlocks(A);
         System.out.println("Split block A succesfully");
         System.out.println(miniBlocksA.toString());
 
         System.out.println("Processing matrix B");
 
         printLineByLine(B);
-        List<int[][]> miniBlocksB = MatrixUtils.divideMatrixInBlocks(B);
+        List<int[][]> miniBlocksB = MatrixUtils.divideMatrixInTwoByTwoBlocks(B);
         System.out.println("Split block B succesfully");
         System.out.println(miniBlocksB.toString());
 
-        List<MatrixResponse> responseBlocks = getResult(miniBlocksA, miniBlocksB, deadline);
+        List<MatrixResponse> responseBlocks = getResult(miniBlocksA, miniBlocksB);
 
         int[][] finalResponse = createFinalResponse(responseBlocks, A.length, A[0].length);
         printLineByLine(finalResponse);
@@ -47,12 +47,12 @@ public class GRPCClientService {
     }
 
     //this method does all the calculations needed for the final result
-    static List<MatrixResponse> getResult(List<int[][]> miniBlocksA, List<int[][]> miniBlocksB, long deadline) {
+    static List<MatrixResponse> getResult(List<int[][]> miniBlocksA, List<int[][]> miniBlocksB) {
         List<MatrixResponse> responseMultiplicationBlocks = new ArrayList<>();
         ArrayList<MatrixServiceBlockingStub> stubs = null;
 
-        MatrixBlock matrixABlocks[][] = MatrixBlockUtils.createArrayOfMatrixBlocks(miniBlocksA);
-        MatrixBlock matrixBBlocks[][] = MatrixBlockUtils.createArrayOfMatrixBlocks(miniBlocksB);
+        MatrixBlock matrixABlocks[][] = MatrixBlockUtils.create2DArrayOfMatrixBlocks(miniBlocksA);
+        MatrixBlock matrixBBlocks[][] = MatrixBlockUtils.create2DArrayOfMatrixBlocks(miniBlocksB);
 
         int serversNeeded = 1;
         int length = matrixABlocks.length;
