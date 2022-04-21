@@ -52,14 +52,12 @@ public class FSStorageService implements StorageService {
             Path destinationFile = this.rootLocation.resolve(
                     Paths.get(Objects.requireNonNull(file.getOriginalFilename())))
                     .normalize().toAbsolutePath();
-            //make sure file is not stored outside current directory
             if (!destinationFile.getParent().equals(this.rootLocation.toAbsolutePath())) {
                 throw new FileStorageException(
                         "Cannot store file outside current directory.");
             }
             try (InputStream inputStream = file.getInputStream()) {
-                Files.copy(inputStream, destinationFile,
-                        StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(inputStream, destinationFile, StandardCopyOption.REPLACE_EXISTING);
             }
         }
         catch (IOException e) {

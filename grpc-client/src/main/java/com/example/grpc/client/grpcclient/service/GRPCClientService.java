@@ -14,7 +14,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -33,12 +32,12 @@ public class GRPCClientService {
     }
 
     //this method does all the calculations needed for the final result
-    static List<MatrixResponse> getMultiplicationResult(List<int[][]> miniBlocksA, List<int[][]> miniBlocksB) {
+    static List<MatrixResponse> getMultiplicationResult(List<int[][]> twoByTwoBlocksA, List<int[][]> twoByTwoBlocksB) {
         List<MatrixResponse> responseMultiplicationBlocks = new ArrayList<>();
         ArrayList<MatrixServiceBlockingStub> stubs = null;
 
-        MatrixBlock matrixABlocks[][] = MatrixBlockUtils.create2DArrayOfMatrixBlocks(miniBlocksA);
-        MatrixBlock matrixBBlocks[][] = MatrixBlockUtils.create2DArrayOfMatrixBlocks(miniBlocksB);
+        MatrixBlock matrixABlocks[][] = MatrixBlockUtils.create2DArrayOfMatrixBlocks(twoByTwoBlocksA);
+        MatrixBlock matrixBBlocks[][] = MatrixBlockUtils.create2DArrayOfMatrixBlocks(twoByTwoBlocksB);
 
         int serversNeeded = 1;
         int length = matrixABlocks.length;
@@ -59,8 +58,7 @@ public class GRPCClientService {
 
         System.out.println("Starting to add the blocks from the multiplication");
 
-        // here we add the blocks from the multiplication, starting with the block
-        ArrayList<MatrixResponse> addBlocks = new ArrayList<>();
+        ArrayList<MatrixResponse> responseadditionBlocks = new ArrayList<>();
         MatrixResponse lastResponse = null;
         int rows = matrixABlocks.length * 2;
         int rowLength = rows / 2;
@@ -79,14 +77,13 @@ public class GRPCClientService {
                     j--;
                 }
             }
-            addBlocks.add(lastResponse);
+            responseadditionBlocks.add(lastResponse);
             index++;
         }
-        return addBlocks;
+        return responseadditionBlocks;
     }
 
     public static ArrayList<MatrixServiceBlockingStub> getServerStubs() {
-        ManagedChannel[] channels = new ManagedChannel[1];
         ArrayList<MatrixServiceBlockingStub> stubs = new ArrayList<MatrixServiceBlockingStub>();
 
         stubs.add(MatrixServiceGrpc.newBlockingStub(ManagedChannelBuilder.forAddress("localhost", 9090).usePlaintext().build()));

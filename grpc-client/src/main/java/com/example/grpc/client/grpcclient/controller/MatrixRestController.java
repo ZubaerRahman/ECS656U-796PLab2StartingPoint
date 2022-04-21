@@ -41,7 +41,7 @@ public class MatrixRestController {
     }
 
     @GetMapping("/")
-    public String listUploadedFiles(Model model) throws IOException {
+    public String mainPage(Model model) throws IOException {
         logger.info("Loading upload file page...");
         model.addAttribute("files",
                 storageService.loadAll().map(path -> MvcUriComponentsBuilder
@@ -118,7 +118,6 @@ public class MatrixRestController {
         return "redirect:/";
     }
 
-    //listing the uploaded files
     @GetMapping("/files/{filename:.+}")
     @ResponseBody
     public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
